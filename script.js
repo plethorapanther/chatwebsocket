@@ -1,19 +1,27 @@
 // script.js
-let socket = new WebSocket("wss://javascript.info/article/websocket/chat/ws");
+let socket = new WebSocket("ws://localhost:8080/ws");
 
-// send message from the form
-document.forms.publish.onsubmit = function() {
-    let outgoingMessage = this.message.value;
+document.forms.publish.onsubmit = function () {
+  let outgoingMessage = this.message.value;
+  let username = prompt("Enter your username:"); // Prompt the user for a username
 
-    socket.send(outgoingMessage);
-    return false;
+  // Ensure the username is not empty
+  if (username) {
+    let data = {
+      username: username,
+      message: outgoingMessage,
+    };
+
+    socket.send(JSON.stringify(data));
+  }
+
+  return false;
 };
 
-// message received - show the message in div#messages
-socket.onmessage = function(event) {
-    let message = event.data;
+socket.onmessage = function (event) {
+  let data = JSON.parse(event.data);
 
-    let messageElem = document.createElement('div');
-    messageElem.textContent = message;
-    document.getElementById('messages').prepend(messageElem);
+  let messageElem = document.createElement('div');
+  messageElem.textContent = data.message;
+  document.getElementById('messages').prepend(messageElem);
 };
