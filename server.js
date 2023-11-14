@@ -62,3 +62,4 @@ if (!module.parent) {
   // log = console.log;
   exports.accept = accept;
 }
+
